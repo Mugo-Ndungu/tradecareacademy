@@ -78,5 +78,7 @@ body,html, :root{
     @apply bg-background text-foreground;
   }
 }
-
+.ql-container{
+  font-size: 14px !important;
+}
 @import"~@uploadthing/react/styles.css"

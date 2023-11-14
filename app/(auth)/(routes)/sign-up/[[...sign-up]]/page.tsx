@@ -1,6 +1,4 @@
 import { SignUp } from "@clerk/nextjs";
-import TLogoImage from "./tradeCareacademylogo.png";
-import { Button } from "@/components/ui/button";
 export default function Page() {
   return (
     <main>
