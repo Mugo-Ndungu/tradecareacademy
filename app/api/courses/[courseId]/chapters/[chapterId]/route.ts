@@ -1,8 +1,7 @@
-// import Mux from "@mux/mux-node";
+import Mux from "@mux/mux-node";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import Mux from '@mux/mux-node';
 
 const { Video } = new Mux(
   process.env.MUX_TOKEN_ID!,
