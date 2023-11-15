@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BookOpenCheck, Combine, Home, LogOut } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import Image from "next/image";
 
 export const GlobalNavBarRoutes = () => {
   return (
@@ -26,7 +27,7 @@ export const GlobalNavBarRoutes = () => {
         </Button>
       </Link>
       <Link href="/">
-        <img src="/images/logo/logo.png" alt="logo" width={50} />
+        <Image src="/images/logo/logo.png" alt="logo" width={50} />
       </Link>
       <UserButton afterSignOutUrl="/" />
     </div>
