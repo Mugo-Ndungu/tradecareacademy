@@ -1,6 +1,7 @@
 import Mux from "@mux/mux-node";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+
 import { db } from "@/lib/db";
 
 const { Video } = new Mux(
@@ -137,9 +138,11 @@ export async function PATCH(
           }
         });
       }
+
       const asset = await Video.Assets.create({
         input: values.videoUrl,
-        playback_policy: "public"
+        playback_policy: "public",
+        test: false,
       });
 
       await db.muxData.create({
@@ -153,7 +156,7 @@ export async function PATCH(
 
     return NextResponse.json(chapter);
   } catch (error) {
-    console.log("[COURSES_CHAPTER_ID] Error:", error, "++++++");
+    console.log("[COURSES_CHAPTER_ID]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -38,12 +38,15 @@ export const ChapterVideoForm = ({
     try {
       await axios.patch(
         `/api/courses/${courseId}/chapters/${chapterId}`,
-        values
+        values,
+        { timeout: 10000 }
       );
       toast.success("Chapter updated");
       toggleEdit();
       router.refresh();
-    } catch {
+    } catch (error) {
+      console.error("Axios error:", error);
+      console.log("VALUES => ",values)
       toast.error("Something went wrong");
     }
   };
