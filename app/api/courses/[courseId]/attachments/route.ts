@@ -21,7 +21,7 @@ export async function POST(req: Request, { params }: { params: { courseId: strin
         if (!courseOwner) {
             return new NextResponse("Unauthorized Access", { status: 401 });
         }
-        const attachments = await db.attachement.create({
+        const attachments = await db.attachment.create({
             data: {
                 url,
                 name: url.split("/").pop(),

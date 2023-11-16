@@ -1,6 +1,6 @@
 "use client";
 
-import { Attachement, Course } from "@prisma/client";
+import { Attachment, Course } from "@prisma/client";
 import * as z from "zod";
 import axios from "axios";
 import {
@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 
 interface AttachmentsFormProps {
-  initialData: Course & { attachements: Attachement[] };
+  initialData: Course & { attachments: Attachment[] };
   courseId: string;
 }
 
@@ -84,14 +84,14 @@ export const AttachmentsForm = ({
       </div>
       {!isEditing && (
         <>
-          {initialData.attachements.length === 0 && (
+          {initialData.attachments.length === 0 && (
             <p className="text-sm mt-2 text-slate-500 italic">
               No Attachments Yet
             </p>
           )}
-          {initialData.attachements.length > 0 && (
+          {initialData.attachments.length > 0 && (
             <div className="space-y-2">
-              {initialData.attachements.map((attachment) => (
+              {initialData.attachments.map((attachment) => (
                 <div
                   key={attachment.id}
                   className="flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md"

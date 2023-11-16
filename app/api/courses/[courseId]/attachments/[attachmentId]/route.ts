@@ -21,7 +21,7 @@ export async function DELETE(req: Request, { params }: { params: { courseId: str
             return new NextResponse("Unauthorized Access", { status: 401 });
         }
 
-        const attachment = await db.attachement.delete({
+        const attachment = await db.attachment.delete({
             where: {
                 courseId: params.courseId,
                 id: params.attachmentId,

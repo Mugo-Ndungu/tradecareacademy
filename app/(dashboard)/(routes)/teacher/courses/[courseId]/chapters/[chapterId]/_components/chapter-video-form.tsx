@@ -2,13 +2,13 @@
 
 import * as z from "zod";
 import axios from "axios";
-import MuxPlayer from "@mux/mux-player-react";
-import { Pencil, PlusCircle, Video } from "lucide-react";
-import { useState } from "react";
+import axiosRetry from "axios-retry";
 import toast from "react-hot-toast";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Pencil, PlusCircle, Video } from "lucide-react";
 import { Chapter, MuxData } from "@prisma/client";
-import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
@@ -19,62 +19,73 @@ interface ChapterVideoFormProps {
   chapterId: string;
 }
 
-const formSchema = z.object({
+const formschema = z.object({
   videoUrl: z.string().min(1),
 });
 
-export const ChapterVideoForm = ({
+const ChapterVideoForm = ({
   initialData,
   courseId,
   chapterId,
 }: ChapterVideoFormProps) => {
+  const router = useRouter();
+
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
-  const router = useRouter();
+  // Configure axios-retry
+  axiosRetry(axios, {
+    retries: 3, // Number of retries
+    retryDelay: axiosRetry.exponentialDelay, // Exponential delay between retries
+    shouldResetTimeout: true, // Reset the timeout between retries
+  });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formschema>) => {
     try {
       await axios.patch(
         `/api/courses/${courseId}/chapters/${chapterId}`,
-        values,
-        { timeout: 10000 }
+        values, {timeout:20000}
       );
-      toast.success("Chapter updated");
+      toast.success("Chapter Updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
-      console.error("Axios error:", error);
-      console.log("VALUES => ",values)
       toast.error("Something went wrong");
     }
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
-      <div className="font-medium flex items-center justify-between">
-        Chapter video
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
+    <div className="border bg-slate-100 rounded-md p-4 mt-6">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-base font-medium">Chapter video</p>
+        <Button size="sm" onClick={toggleEdit}>
+          {isEditing && (
+            <>
+              <p className="text-xs">Cancel</p>
+            </>
+          )}
           {!isEditing && !initialData.videoUrl && (
             <>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add a video
+              <PlusCircle className="h-3 w-3 mr-2" />
+              <p className="text-xs">Add a video</p>
             </>
           )}
           {!isEditing && initialData.videoUrl && (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit video
+              <Pencil className="h-3 w-3 mr-2" />
+              <p className="text-xs">Edit video</p>
             </>
           )}
         </Button>
       </div>
       {!isEditing &&
         (!initialData.videoUrl ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <Video className="h-10 w-10 text-slate-500" />
+          <div
+            className="flex items-center justify-center
+                h-60 rounded-md bg-slate-200"
+          >
+            <Video className="h-10 w-10 text-slate-700" />
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
@@ -99,9 +110,11 @@ export const ChapterVideoForm = ({
       {initialData.videoUrl && !isEditing && (
         <div className="text-xs text-muted-foreground mt-2">
           Videos can take a few minutes to process. Refresh the page if video
-          does not appear.
+          does not appear
         </div>
       )}
     </div>
   );
 };
+
+export default ChapterVideoForm;

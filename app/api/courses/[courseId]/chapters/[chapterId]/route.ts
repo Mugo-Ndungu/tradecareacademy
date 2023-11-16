@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
+import axios from "axios";
 
 const { Video } = new Mux(
   process.env.MUX_TOKEN_ID!,
@@ -152,6 +153,34 @@ export async function PATCH(
           playbackId: asset.playback_ids?.[0]?.id,
         }
       });
+      // try {
+      //   const response = await axios.post('https://api.mux.com/video/v1/assets', {
+      //     input: values.videoUrl,
+      //     playback_policy: 'public',
+      //     test: false,
+      //   }, {
+      //     auth: {
+      //       username: 'c336ca0d-b3c7-4804-b2b7-a6dbe9337c8e',
+      //       password: 'YgAlVTr8v1Ksxw5D0CNkWsJoTs2ZOXeDpAnbwFcoeL9UzgPWJgrAkfqs4xdnzq8I+rKSvfVMc0h',
+      //     },
+      //     timeout: 10000, // Set the timeout value in milliseconds (e.g., 10 seconds)
+      //   });
+
+      //   const asset = response.data;
+      //   console.log('Video asset created:', asset);
+
+      //   await db.muxData.create({
+      //     data: {
+      //       chapterId: params.chapterId,
+      //       assetId: asset.id,
+      //       playbackId: asset.playback_ids?.[0]?.id,
+      //     }
+      //   });
+      // } catch (error) {
+      //   console.error('Error creating video asset:', error);
+      //   throw error; // You can handle or rethrow the error as needed
+      // }
+
     }
 
     return NextResponse.json(chapter);

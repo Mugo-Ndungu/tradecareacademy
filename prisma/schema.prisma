@@ -1,29 +1,26 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
 model Course {
-  id          String  @id @default(uuid())
-  userId      String
-  title       String  @db.Text
+  id String @id @default(uuid())
+  userId String
+  title String @db.Text
   description String? @db.Text
-  imageUrl    String? @db.Text
-  price       Float?
+  imageUrl String? @db.Text
+  price Float?
   isPublished Boolean @default(false)
 
-  categoryId String
-  category Categry? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  category Category? @relation(fields: [categoryId] , references: [id])
 
-  attachements Attachement[]
+  attachments Attachment[]
   chapters Chapter[]
   purchases Purchase[]
 
@@ -33,19 +30,19 @@ model Course {
   @@index([categoryId])
 }
 
-model Categry {
+model Category {
   id String @id @default(uuid())
-  name String @unique
+  name String
   courses Course[]
 }
 
-model Attachement {
-  id   String @id @default(uuid())
+model Attachment {
+  id String @id @default(uuid())
   name String
-  url  String @db.Text
+  url String @db.Text
 
   courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId] , references: [id] , onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,7 +50,7 @@ model Attachement {
   @@index([courseId])
 }
 
-model Chapter{
+model Chapter {
   id String @id @default(uuid())
   title String
   description String? @db.Text
@@ -65,7 +62,7 @@ model Chapter{
   muxData MuxData?
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId] , references: [id] , onDelete: Cascade)
 
   userProgress UserProgress[]
 
@@ -81,15 +78,15 @@ model MuxData {
   playbackId String?
 
   chapterId String @unique
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId] , references: [id] , onDelete: Cascade)
 }
 
 model UserProgress {
   id String @id @default(uuid())
   userId String
 
-  chapterId String
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String 
+  chapter Chapter @relation(fields: [chapterId] , references: [id] , onDelete: Cascade)
 
   isCompleted Boolean @default(false)
 
@@ -97,26 +94,27 @@ model UserProgress {
   updatedAt DateTime @updatedAt
 
   @@index([chapterId])
-  @@unique([userId, chapterId])
+  @@unique([userId , chapterId])
 }
-model Purchase{
+
+model Purchase {
   id String @id @default(uuid())
   userId String
 
   courseId String
-  course Course @relation(fields: [courseId], references: [id],onDelete: Cascade)
+  course Course @relation(fields: [courseId] , references: [id] , onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  updatedAt DateTime @updatedAt
 
   @@index([courseId])
 }
 
-model stripeCustormer{
+model StripeCustomer {
   id String @id @default(uuid())
   userId String @unique
   stripeCustomerId String @unique
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  updatedAt DateTime @updatedAt
 }
