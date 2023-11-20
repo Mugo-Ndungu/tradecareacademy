@@ -95,6 +95,15 @@ export async function PATCH(
   req: Request,
   { params }: { params: { courseId: string; chapterId: string } }
 ) {
+  const existingMuxData = await db.muxData.findUnique({
+    where: {
+      chapterId: params.chapterId,
+    },
+    select: {
+      id: true,
+      assetId: true
+    }
+  });
   try {
     const { userId } = auth();
     const { isPublished, ...values } = await req.json();
@@ -124,12 +133,9 @@ export async function PATCH(
       }
     });
 
+
+
     if (values.videoUrl) {
-      const existingMuxData = await db.muxData.findFirst({
-        where: {
-          chapterId: params.chapterId,
-        }
-      });
 
       if (existingMuxData) {
         await Video.Assets.del(existingMuxData.assetId);
@@ -139,7 +145,7 @@ export async function PATCH(
           }
         });
       }
-
+      console.log("CHAPTER ID FOR MANUAL MUXDATA LOADING", params.chapterId, " | Video Url=> ",values.videoUrl )
       const asset = await Video.Assets.create({
         input: values.videoUrl,
         playback_policy: "public",
@@ -153,39 +159,12 @@ export async function PATCH(
           playbackId: asset.playback_ids?.[0]?.id,
         }
       });
-      // try {
-      //   const response = await axios.post('https://api.mux.com/video/v1/assets', {
-      //     input: values.videoUrl,
-      //     playback_policy: 'public',
-      //     test: false,
-      //   }, {
-      //     auth: {
-      //       username: 'c336ca0d-b3c7-4804-b2b7-a6dbe9337c8e',
-      //       password: 'YgAlVTr8v1Ksxw5D0CNkWsJoTs2ZOXeDpAnbwFcoeL9UzgPWJgrAkfqs4xdnzq8I+rKSvfVMc0h',
-      //     },
-      //     timeout: 10000, // Set the timeout value in milliseconds (e.g., 10 seconds)
-      //   });
-
-      //   const asset = response.data;
-      //   console.log('Video asset created:', asset);
-
-      //   await db.muxData.create({
-      //     data: {
-      //       chapterId: params.chapterId,
-      //       assetId: asset.id,
-      //       playbackId: asset.playback_ids?.[0]?.id,
-      //     }
-      //   });
-      // } catch (error) {
-      //   console.error('Error creating video asset:', error);
-      //   throw error; // You can handle or rethrow the error as needed
-      // }
-
     }
 
     return NextResponse.json(chapter);
   } catch (error) {
     console.log("[COURSES_CHAPTER_ID]", error);
+    console.log("existingMuxData => ", existingMuxData, " |Chapter ID=> ", params.chapterId)
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
