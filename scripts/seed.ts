@@ -6,12 +6,13 @@ async function main() {
     try{
         await database.category.createMany({
             data:[
-                {name : "Crop Management"},
-                {name : "Farm Equipment & Technology"},
-                {name : "Research and Development"},
-                {name : "Community and Farm Safety"},
-                {name : "Environmental Sustainability"},
-                {name : "Horticulture and Gardening"},
+                {name : "RASTA"},
+                {name : "A-Z Crop Guides (Internal)"},
+                {name : "A-Z Crop Guides (External)"},
+                {name : "Reference Materials"},
+                {name : "Training Materials"},
+                {name : "Demo Farms"},
+                {name : "Pest & Disease Identification Charts"},
             ]
         })
         console.log("Success")
