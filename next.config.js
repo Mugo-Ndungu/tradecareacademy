@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images : {
-      domains : [
-          "utfs.io"   
-      ]
-  }
-}
+  images: {
+    domains: ["utfs.io", "uplodthing.com"],
+  },
 
-module.exports = nextConfig
+  videos: {
+    domains: ["utfs.io", "uplodthing.com", "mux.com"],
+  },
+};
+
+module.exports = nextConfig;
